@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEditor;
 using UnityEngine;
-using UnityEditor;
 
 public class ReplaceWindow : EditorWindow
 {
@@ -13,20 +11,17 @@ public class ReplaceWindow : EditorWindow
         GetWindow<ReplaceWindow>("Replace Window");
     }
 
-    void OnGUI()
+    private void OnGUI()
     {
-        Template = (GameObject)EditorGUILayout.ObjectField("Template", Template, typeof(GameObject), false);
+        Template = (GameObject) EditorGUILayout.ObjectField("Template", Template, typeof(GameObject), false);
 
         GUI.enabled = false;
         if (Template)
-        {
             if (GUILayout.Button("Replace Selected"))
-            {
-
-                foreach (GameObject obj in Selection.gameObjects)
+                foreach (var obj in Selection.gameObjects)
                 {
                     // https://docs.unity3d.com/ScriptReference/PrefabUtility.InstantiatePrefab.html
-                    GameObject prefab = (GameObject)PrefabUtility.InstantiatePrefab(Template);
+                    var prefab = (GameObject) PrefabUtility.InstantiatePrefab(Template);
                     var objXform = obj.transform;
                     var name = objXform.name;
                     var parent = objXform.parent;
@@ -37,7 +32,5 @@ public class ReplaceWindow : EditorWindow
                     if (parent)
                         prefab.transform.parent = parent;
                 }
-            }
-        }
     }
 }
