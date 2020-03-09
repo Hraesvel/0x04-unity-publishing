@@ -1,17 +1,18 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    private Controller _ctrl;
+    private Controllable _ctrl;
     private Vector3 _direction;
 
     private Gradient _healthColor;
     private Image _healthTextBG;
     private Vector2 _pos;
+
+    private Rigidbody _rigidbody;
     private float _startHealth;
     private Vector2 _startPos;
     public Image _winLoseBg;
@@ -20,13 +21,8 @@ public class PlayerController : MonoBehaviour
     public bool allowHpClrChange = true;
 
 
-    [SerializeField]
-    private int health = 5;
-    public int Health
-    {
-        get { return health;}
-        set { health = value; }
-    }
+    [SerializeField] private int health = 5;
+
     public Color healthEnd = Color.black;
 
     public Color healthStart = Color.red;
@@ -40,21 +36,20 @@ public class PlayerController : MonoBehaviour
     public Image touchBG;
     public Image touchMove;
     public Text winLoseText;
-    
-    private Rigidbody _rigidbody;
-    
-    
 
+    public int Health
+    {
+        get { return health; }
+        set { health = value; }
+    }
 
     // Start is called before the first frame update
-
-
     private void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _healthTextBG = healthText.transform.parent.GetComponent<Image>();
         _winLoseBg = winLoseText.transform.parent.GetComponent<Image>();
-        
+
         _pos = new Vector2(0f, 0f);
         _startPos = new Vector2(0f, 0f);
         _healthColor = new Gradient();
@@ -65,7 +60,7 @@ public class PlayerController : MonoBehaviour
         colorKey[1].color = healthEnd;
         colorKey[1].time = 0f;
         _healthColor.colorKeys = colorKey;
-        
+
         _winLoseBg.gameObject.SetActive(false);
 
         scoreText.text = string.Format("Score: {0}", score);
@@ -76,12 +71,10 @@ public class PlayerController : MonoBehaviour
         touchBG.gameObject.SetActive(false);
         touchMove.gameObject.SetActive(false);
 
-        _ctrl = new Controller {StartImage = touchBG, ToImage = touchMove, StartPos = _startPos, ToPos = _pos};
+        _ctrl = new Controllable {StartImage = touchBG, ToImage = touchMove, StartPos = _startPos, ToPos = _pos};
 
         if (PlayerPrefs.HasKey("touchSensitivity"))
             _ctrl.Sensitivity = PlayerPrefs.GetFloat("touchSensitivity");
-
-       
     }
 
     private void Update()
@@ -98,7 +91,6 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(LoadScene(3.0f));
             // Debug.Log("Game Over!");
         }
-        
     }
 
     private void FixedUpdate()

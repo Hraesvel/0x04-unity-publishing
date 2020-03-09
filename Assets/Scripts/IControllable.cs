@@ -1,8 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-internal interface IController
+
+public interface IControllable : IKeyControllable, ITouchControllable
 {
+}
+
+public interface ITouchControllable {
     Image StartImage { get; set; }
 
     Image ToImage { get; set; }
@@ -10,5 +14,11 @@ internal interface IController
     Vector2 ToPos { get; set; }
     float Sensitivity { get; set; }
     bool TouchController(ref Vector3 dir);
+
+}
+
+public interface IKeyControllable
+{
     bool KeyController(ref Vector3 dir);
+    
 }
